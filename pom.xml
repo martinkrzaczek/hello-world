@@ -1,0 +1,185 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<!-- http://maven.apache.org/guides/introduction/introduction-to-the-pom.html 
+		https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html
+		https://maven.apache.org/guides/getting-started/
+		https://stackoverflow.com/questions/30571/how-do-i-tell-maven-to-use-the-latest-version-of-a-dependency 
+		
+		Latest plugin versions:
+			https://maven.apache.org/plugins/index.html
+			
+			
+		mvn test -DskipTests=false			
+	-->
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>mkrz.kTools</groupId>
+		<artifactId>kToolsSuite</artifactId>
+		<version>4.0</version>
+	</parent>
+
+	<groupId>mkrz.testsCopilot</groupId>
+	<artifactId>helloWorld</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>helloWorld</name>
+	<url>http://krzaczek.free.fr</url>
+    <description>
+        <![CDATA[Martin Krzaczek's tools for GraalVM-JS having very large dependencies]]>
+    </description>
+
+
+		<!-- https://maven.apache.org/pom.html#Developers -->
+	<developers>
+		<developer>
+			<id>mkrz</id>
+			<name>Martin Krzaczek (MKRZ)</name>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<properties>
+		<maven.compiler.source>25</maven.compiler.source>
+		<maven.compiler.target>25</maven.compiler.target>
+	
+			<!-- Tests are skipped by default as they require various running applications such as LDAP, SQUID, ... 
+				To enable them from the command line, use:
+					mvn test -DskipTests=false
+			-->
+		<skipTests>false</skipTests>
+	</properties>
+
+	<dependencies>
+
+		<!--
+		-->
+		<dependency>
+			<groupId>mkrz.kTools</groupId>
+			<artifactId>kTools4</artifactId>
+			<version>${kTools4.version}</version>
+		</dependency>
+		
+	</dependencies>
+
+	<build>
+			<!-- include source code into JAR -->
+		<resources>
+				<!-- include LICENSE.txt -->
+			<resource>
+				<directory>.</directory>
+				<targetPath>.</targetPath>
+				<includes>
+					<include>LICENSE.txt</include>
+				</includes>
+			</resource>
+				<!-- include source code into JAR -->
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.java</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+
+		<plugins>
+			
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<compilerArgs>
+						<arg>-Xlint:deprecation</arg>
+							<!-- https://inside.java/2023/10/23/quality-heads-up/ 
+								https://mail.openjdk.org/pipermail/quality-discuss/2023-July/001122.html
+							-->
+						<arg>-proc:full</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
+			
+				<!-- Customize the manifest file -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven-jar-plugin.version}</version>
+					
+				<configuration>
+					<archive>
+						<!-- http://maven.apache.org/shared/maven-archiver/index.html#class_manifest -->
+						<manifest>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+						<manifestEntries>
+							<Built-By>Martin Krzaczek</Built-By>
+							<Sealed>true</Sealed>
+							<Built-Date>${maven.build.timestamp}</Built-Date>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+
+				<!-- put JAR with source code into Maven repository -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven-source-plugin.version}</version>
+				
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+				<!-- Skip automatic JUnit tests as they have strict prerequisites and must be run manually
+					https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin
+				-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+				<configuration>
+					<!-- NO as it cannot be overriden with "-DskipTests=false"
+							https://maven.apache.org/surefire/maven-surefire-plugin/examples/skipping-tests.html
+					<skipTests>true</skipTests>
+					-->
+					<skipTests>${skipTests}</skipTests>
+				</configuration>
+			</plugin>
+			
+
+				<!-- put JAR with javadoc into Maven repository
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+				-->
+
+		</plugins>
+	</build>
+</project>

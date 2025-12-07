@@ -19,5 +19,14 @@ public class Main
 		}
 		
 	}
+	
+	public static String generateRandomUniqueLogin( int P_wishedLoginLength, java.util.Set<String> P_existingLogins ) 
+	{
+		String uniqueLogin = null;
+
+		// Generate a random unique login having "P_wishedLoginLength" length and permuting letters and numbers
+		
+		return uniqueLogin;
+	}
 
 }

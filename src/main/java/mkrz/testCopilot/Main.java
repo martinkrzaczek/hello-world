@@ -18,6 +18,11 @@ public class Main
 			System.out.println( v );
 		}
 		
+		// Convert an Enumeration<String> to collection<String>
+		
+		
+		
+		
 	}
 	
 	public static String generateRandomUniqueLogin( int P_wishedLoginLength, java.util.Set<String> P_existingLogins ) 
@@ -25,6 +30,11 @@ public class Main
 		String uniqueLogin = null;
 
 		// Generate a random unique login having "P_wishedLoginLength" length and permuting letters and numbers
+		// and starting with a letter. The purpose is to generate anonymous logins for users with at least 1000 
+		// times logins that there are users.
+		// The generated login must not exist in the "P_existingLogins" set.
+		java.util.Random random = new java.util.Random();
+		
 		
 		return uniqueLogin;
 	}
